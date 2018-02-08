@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- References a Handlebars partial in views/partials/head.handlebars -->
+	{{>head}}
+	<title>REACT - Lab AS4</title>
+</head>
+<body>
+
+<!-- References a Handlebars partial in views/partials/bsnavbar.handlebars -->
+{{>bsnavbar}}
+
+<!-- Puts the HTML from whichever 'view' (aka page) is currently being called here. EX: If /about page then all code from about.handlebars goes below -->
+<div class="container">
+{{{body}}}
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

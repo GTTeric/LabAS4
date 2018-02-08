@@ -1,0 +1,50 @@
+<div id="root" class="page-header">
+<h3>REACT Real-time Data Reading Page!</h3>
+<h4>This page will display realtime data via REACT from /realtime/data every 5 seconds</h4>
+</div>
+<script type="text/babel">
+
+//This is just complicating things but good to know how to implement new styles quicky in REACT
+const styles = {
+    fontFamily: 'sans-seriff',
+    textAlign: 'center',
+}
+
+/*
+class getData extends React.Component {
+    //getJSON - https://www.w3schools.com/jquery/ajax_getjson.asp
+    //Need to change the below to work with REACT 
+    $(document).ready(function(){
+        $.getJSON("/realtime/data", function(result){
+            $.each(result, function(i, field){
+                $("#rtdata2").empty(); //replace and replaceWith does not work
+                $("#rtdata2").append("<h1><b>" + field + "</b></h1>");
+            });
+        });
+    });
+}*/
+
+//Do I need the below method to show the data (change name to ShowData) once the above method gets the data? Probably.
+class AddData extends React.Component {
+    render () {
+        return(
+            <div style={styles}>
+                <h1>{this.props.data}</h1>
+            </div>
+        )
+    }
+}
+
+let data = 0;
+
+//Currently just counts up from 0 every 5 seconds. setInterval needs to be moved to getData at some point
+setInterval(() => ReactDOM.render(
+    <AddData data={data++} />,
+    document.getElementById('reactData2')
+), 5000);
+</script>
+
+<div id="reactData">
+<h3>The current random number using REACT is:</h3>
+<h1 id="reactData2"></h1>
+</div>

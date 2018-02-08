@@ -1,0 +1,23 @@
+<div class="page-header">
+<h3>Real-time Data Reading Page!</h3>
+<h4>This page will display realtime data from /realtime/data every 5 seconds</h4>
+</div>
+
+<script>
+ajaxCall(); //call ASAP to load initial #
+setInterval(ajaxCall, 5000); //Then calls every 5000 MS == 5 secs
+function ajaxCall() {
+    //getJSON - https://www.w3schools.com/jquery/ajax_getjson.asp 
+    $(document).ready(function(){
+        $.getJSON("/realtime/data", function(result){
+            $.each(result, function(i, field){
+                $("#rtdata2").empty(); //replace and replaceWith does not work
+                $("#rtdata2").append("<h1><b>" + field + "</b></h1>");
+            });
+        });
+    });
+}
+</script>
+<div id="rtdata"><h4>The current random number is:</h4>
+<h1 id="rtdata2"></h1>
+</div>
