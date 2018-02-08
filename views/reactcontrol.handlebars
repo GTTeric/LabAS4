@@ -1,179 +1,116 @@
 <div id="container">
-    <!-- This element's contents will be replaced with your component(s). -->
+    <!-- This element's contents will be replaced with component(s). -->
 </div>
 
 <script type="text/babel">
+/*---Think in REACT--- (https://reactjs.org/docs/thinking-in-react.html)
+We have four Components:
+  #1- Modifiable User Table = The entire page
+  #2- Input Form = Receives user input: id, firstname, lastname via textboxes and requestType via which button is clicked
+  #3- User Table = Displays current data and modifies it based on user input above
+  #4- User Rows = Display a row for each user and their corresponding data
+Component Heirarchy:
+  #1
+  --->#2
+  --->#3
+    --->#4
+*/
+class UserRow extends React.Component { //#4
+    render() {
+        const user = this.props.user;
+        const id = user.id ?
 
-class ProductCategoryRow extends React.Component {
-  render() {
-    const category = this.props.category;
-    return (
-      <tr>
-        <th colSpan="2">
-          {category}
-        </th>
-      </tr>
-    );
-  }
-}
+            user.id : <span>{user.id}</span>;
 
-class ProductRow extends React.Component {
-  render() {
-    const product = this.props.product;
-    const name = product.stocked ?
-      product.name :
-      <span style={{color: 'red'}}>
-        {product.name}
-      </span>;
-
-    return (
-      <tr>
-        <td>{name}</td>
-        <td>{product.price}</td>
-      </tr>
-    );
-  }
-}
-
-class ProductTable extends React.Component {
-  render() {
-    const filterText = this.props.filterText;
-    const inStockOnly = this.props.inStockOnly;
-
-    const rows = [];
-    let lastCategory = null;
-
-    this.props.products.forEach((product) => {
-      if (product.name.indexOf(filterText) === -1) {
-        return;
-      }
-      if (inStockOnly && !product.stocked) {
-        return;
-      }
-      if (product.category !== lastCategory) {
-        rows.push(
-          <ProductCategoryRow
-            category={product.category}
-            key={product.category} />
+        return (
+            <tr>
+                <td>{id}</td>
+                <td>{user.firstname}</td>
+                <td>{user.lastname}</td>
+            </tr>
         );
-      }
-      rows.push(
-        <ProductRow
-          product={product}
-          key={product.name}
-        />
-      );
-      lastCategory = product.category;
-    });
-
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
-    );
-  }
+    }
 }
 
-class SearchBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-    this.handleInStockChange = this.handleInStockChange.bind(this);
-  }
-  
-  handleFilterTextChange(e) {
-    this.props.onFilterTextChange(e.target.value);
-  }
-  
-  handleInStockChange(e) {
-    this.props.onInStockChange(e.target.checked);
-  }
-  
-  render() {
-    return (
-      <form>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={this.props.filterText}
-          onChange={this.handleFilterTextChange}
-        />
-        <p>
-          <input
-            type="checkbox"
-            checked={this.props.inStockOnly}
-            onChange={this.handleInStockChange}
-          />
-          {' '}
-          Only show products in stock
-        </p>
-      </form>
-    );
-  }
+class UserTable extends React.Component {//#3
+    render() {
+        const rows = [];
+
+        this.props.users.forEach((user) => {
+            rows.push( //Calls #4
+                <UserRow
+                    user={user}
+                    key={user.id} />
+            );
+        });
+
+        return (
+            <table>
+                <thead>
+                    <tr>
+                        <th>-User ID-</th>
+                        <th>-First Name-</th>
+                        <th>-Last Name-</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        );
+    }
 }
 
-class FilterableProductTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filterText: '',
-      inStockOnly: false
-    };
-    
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-    this.handleInStockChange = this.handleInStockChange.bind(this);
-  }
+class InputForm extends React.Component {//#2
+    render() {
+        return (
+            <form id="reqForm">
+                <div class="container">
+                    <h3>Create User</h3>
+                    <p>Please fill in this form to create a user.</p>
+                    <hr />
 
-  handleFilterTextChange(filterText) {
-    this.setState({
-      filterText: filterText
-    });
-  }
-  
-  handleInStockChange(inStockOnly) {
-    this.setState({
-      inStockOnly: inStockOnly
-    })
-  }
+                    <p><label><b>ID Number </b></label>
+                    <input type="text" placeholder="Enter ID#" name="id" required /></p>
 
-  render() {
-    return (
-      <div>
-        <SearchBar
-          filterText={this.state.filterText}
-          inStockOnly={this.state.inStockOnly}
-          onFilterTextChange={this.handleFilterTextChange}
-          onInStockChange={this.handleInStockChange}
-        />
-        <ProductTable
-          products={this.props.products}
-          filterText={this.state.filterText}
-          inStockOnly={this.state.inStockOnly}
-        />
-      </div>
-    );
-  }
+                    <p><label><b>First Name </b></label>
+                    <input type="text" placeholder="Enter First Name" name="firstname" required /></p>
+
+                    <p><label><b>Last Name </b></label>
+                    <input type="text" placeholder="Enter Last Name" name="lastname" required /></p>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" id="createbtn">Create User (POST)</button>
+                        <button type="button" class="btn btn-info" id="updatebtn">Update User (PUT)</button>
+                        <button type="button" class="btn btn-primary" id="deletebtn">Delete User</button>
+                        <button type="button" class="btn btn-info" id="Cancel">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        );
+    }
 }
 
+class ModifiableUserTable extends React.Component { //#1
+    render() {
+        return ( //Calls #2 & #3
+            <div>
+                <InputForm /> 
+                <UserTable users={this.props.users} />
+            </div>
+        );
+    }
+}
 
-const PRODUCTS = [
-  {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
-  {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
-  {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
-  {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch'},
-  {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
-  {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
+//For testing purposes before JSON implementation
+const USERS = [
+    { "id": "222", "firstname": "Ben", "lastname": "Affleck" },
+    { "id": "777", "firstname": "Wei", "lastname": "Cai" },
+    { "id": "111", "firstname": "Eric", "lastname": "Fantillo" }
 ];
 
+//This was rendering properly before changes made to UserRow and UserTable.......
 ReactDOM.render(
-  <FilterableProductTable products={PRODUCTS} />,
-  document.getElementById('container')
-);
+    <ModifiableUserTable users={USERS} />,
+    document.getElementById('container')
+);  
 
 </script>
